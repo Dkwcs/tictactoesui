@@ -201,9 +201,13 @@ module ttt_game::game_entity {
     }
 
     #[test_only]
-    public fun new (player1: PlayerInfo, player2: PlayerInfo, board: vector<vector<u8>>, ctx: &mut TxContext): GameEntity {
+    public fun new (player1: PlayerInfo, player2: PlayerInfo, ctx: &mut TxContext): GameEntity {
         let id = object::new(ctx);
-
+        let board = vector[
+            vector[NO_MARK, NO_MARK, NO_MARK],
+            vector[NO_MARK, NO_MARK, NO_MARK],
+            vector[NO_MARK, NO_MARK, NO_MARK],
+        ];
         let game_entity = GameEntity {
             id,
             player1,
