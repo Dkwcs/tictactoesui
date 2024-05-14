@@ -13,10 +13,10 @@ module ttt_game::expected_failure {
         let player1 = test_player1(scenario.ctx());
         let player2 = test_player2(scenario.ctx());
 
-        let mut ttt_game = new_game_entity(player1.player_info(), player2.player_info(), scenario.ctx());
+        let mut ttt_game = new_game_entity(*player1.info(), *player2.info(), scenario.ctx());
     
         //Act & Assert
-        scenario.next_tx(player2.player_info().addr());
+        scenario.next_tx(player2.info().addr());
         make_turn(&mut ttt_game, 0, 0, scenario.ctx());
 
         ttt_game.destroy();
@@ -33,7 +33,7 @@ module ttt_game::expected_failure {
         let player1 = test_player1(scenario.ctx());
         let player2 = test_player2(scenario.ctx());
 
-        let mut ttt_game = new_game_entity(player1.player_info(), player2.player_info(), scenario.ctx());
+        let mut ttt_game = new_game_entity(*player1.info(), *player2.info(), scenario.ctx());
     
         //Act & Assert
         scenario.next_tx(unkown_player_adrr);
@@ -54,7 +54,7 @@ module ttt_game::expected_failure {
         let player2 = test_player2(scenario.ctx());
        
 
-        let mut ttt_game = new_game_entity(player1.player_info(), player2.player_info(), scenario.ctx());
+        let mut ttt_game = new_game_entity(*player1.info(), *player2.info(), scenario.ctx());
 
         //Act & Assert
         scenario.next_tx(player1_addr);
@@ -78,7 +78,7 @@ module ttt_game::expected_failure {
         let player2 = test_player2(scenario.ctx());
        
 
-        let mut ttt_game = new_game_entity(player1.player_info(), player2.player_info(), scenario.ctx());
+        let mut ttt_game = new_game_entity(*player1.info(), *player2.info(), scenario.ctx());
 
         //Act & Assert
         play_simple_game(&mut ttt_game, player1_addr, player2_addr, &mut scenario);

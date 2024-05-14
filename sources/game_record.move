@@ -14,8 +14,8 @@ module ttt_game::game_record {
     public(package) fun new_game_record(player1_info: PlayerInfo, player2_info: PlayerInfo, winner: PlayerInfo, ctx: &mut TxContext): GameRecord {
         GameRecord {
             id: object::new(ctx),
-            player1_nickname: player1_info.nickname(),
-            player2_nickname: player2_info.nickname(),
+            player1_nickname: *player1_info.nickname(),
+            player2_nickname: *player2_info.nickname(),
             winner,
         }
    }

@@ -14,7 +14,7 @@ module ttt_game::ttt_game_tests {
         let player1 = test_player1(scenario.ctx());
         let player2 = test_player2(scenario.ctx());
        
-        let mut ttt_game = new_game_entity(player1.player_info(), player2.player_info(), scenario.ctx());
+        let mut ttt_game = new_game_entity(*player1.info(), *player2.info(), scenario.ctx());
 
         //Act
         play_simple_game(&mut ttt_game, player1_addr, player2_addr, &mut scenario);
@@ -47,7 +47,7 @@ module ttt_game::ttt_game_tests {
         let player1 = test_player1(scenario.ctx());
         let player2 = test_player2(scenario.ctx());
 
-        let mut ttt_game = new_game_entity(player1.player_info(), player2.player_info(), scenario.ctx());
+        let mut ttt_game = new_game_entity(*player1.info(), *player2.info(), scenario.ctx());
 
         //Act & Assert
         play_simple_game(&mut ttt_game, player1_addr, player2_addr, &mut scenario);

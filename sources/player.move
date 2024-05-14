@@ -1,10 +1,9 @@
 module ttt_game::player {
     use std::string::String;
 
-    public struct Player has key, store {
+    public struct Player has key {
             id: UID,
-            addr: address,
-            nickname: String
+            info: PlayerInfo
     }
 
     public struct PlayerInfo has store, copy, drop {
@@ -12,28 +11,28 @@ module ttt_game::player {
         nickname: String,
     }
 
-    public fun nickname(self: &PlayerInfo) : String {
-        self.nickname
+
+    public fun nickname(self: &PlayerInfo) : &String {
+        &self.nickname
     }
     entry fun create_player(nickname: String, ctx: &mut TxContext) {
         let player = Player {
             id: object::new(ctx),
-            addr: ctx.sender(),
-            nickname,
+            info: PlayerInfo {
+                addr: ctx.sender(),
+                nickname,
+            }
         };
-        transfer::public_freeze_object(player);
+        transfer::freeze_object(player);
     }
 
     public fun destroy(self: Player) {
-        let Player { id, addr: _, nickname: _ } = self;
+        let Player { id, info: _ } = self;
         object::delete(id);
     }
 
-    public fun player_info(self: &Player) : PlayerInfo {
-        PlayerInfo {
-            addr: self.addr,
-            nickname: self.nickname
-        }
+    public fun info(self: &Player) : &PlayerInfo {
+        &self.info
     }
 
     public fun addr(self: &PlayerInfo): address {
@@ -46,8 +45,10 @@ module ttt_game::player {
 
         let player = Player {
             id,
-            addr,
-            nickname
+            info: PlayerInfo {
+                addr,
+                nickname
+            }
         };
 
        player

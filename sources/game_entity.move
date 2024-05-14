@@ -16,7 +16,7 @@ module ttt_game::game_entity {
     const EInvalidTurnLocation: u64 = 2;
     const EGameIsFinished: u64 = 3;
 
-    public struct GameEntity has key, store {
+    public struct GameEntity has key {
         id: UID,
         player1: PlayerInfo,
         player1_mark: u8,
@@ -72,11 +72,11 @@ module ttt_game::game_entity {
         ];
         let ttt_game = GameEntity {
             id,
-            player1: player1.player_info(),
+            player1: *player1.info(),
             player1_mark: X_MARK,
-            player2: player2.player_info(),
+            player2: *player2.info(),
             player2_mark: O_MARK, 
-            current_player: player1.player_info(),
+            current_player: *player1.info(),
             is_finished: false,
             winner: option::none(),
             game_board: board,
@@ -84,11 +84,11 @@ module ttt_game::game_entity {
         event::emit(
             GameStartedEvent {
             game_id: object::uid_to_inner(&ttt_game.id),
-            player1_info: player1.player_info(),
-            player2_info: player2.player_info()
+            player1_info: *player1.info(),
+            player2_info: *player2.info()
         });
 
-        transfer::public_share_object(ttt_game);
+        transfer::share_object(ttt_game);
      }
 
     entry fun delete_game(_: &GameManagerCap, history: &mut History, game: GameEntity, ctx: &mut TxContext) {

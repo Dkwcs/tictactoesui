@@ -2,7 +2,7 @@ module ttt_game::history {
     use ttt_game::game_record::{GameRecord};
     use sui::table::Table;
 
-    public struct History has key, store {
+    public struct History has key {
         id: UID,
         games: Table<ID, GameRecord>,
     }
