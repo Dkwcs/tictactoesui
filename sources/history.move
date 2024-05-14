@@ -1,5 +1,6 @@
 module ttt_game::history {
-    use ttt_game::game_record::{GameRecord};
+    use ttt_game::game_record::{GameRecord, Self};
+    use ttt_game::player::PlayerInfo;
     use sui::table::Table;
 
     public struct History has key {
@@ -7,10 +8,15 @@ module ttt_game::history {
         games: Table<ID, GameRecord>,
     }
 
-    public fun games(self: &mut History): &mut Table<ID, GameRecord> {
-       &mut self.games
+    public fun games(self: &History): &Table<ID, GameRecord> {
+       &self.games
     }
 
+   public fun add_game(self: &mut History, player1_info: PlayerInfo, player2_info: PlayerInfo, winner: PlayerInfo, ctx: &mut TxContext) {
+        let game_record = game_record::new_game_record(player1_info, player2_info,winner, ctx);
+        self.games.add(object::id(&game_record), game_record)
+   }
+   
    fun init(ctx: &mut TxContext) {
         transfer::transfer(History {
             id: object::new(ctx),

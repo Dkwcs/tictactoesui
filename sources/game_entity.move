@@ -1,8 +1,6 @@
 module ttt_game::game_entity {
     use ttt_game::player::{PlayerInfo};
-    use ttt_game::game_record::Self;
     use ttt_game::history::{History};
-    use sui::table;
     use ttt_game::player::Player;
     use sui::event;
     
@@ -15,6 +13,7 @@ module ttt_game::game_entity {
     const EUnkownPlayer: u64 = 1;
     const EInvalidTurnLocation: u64 = 2;
     const EGameIsFinished: u64 = 3;
+    const EGameIsNotFinished: u64 = 4;
 
     public struct GameEntity has key {
         id: UID,
@@ -43,15 +42,15 @@ module ttt_game::game_entity {
         &self.game_board
     }
     
-    public(package) fun is_finished(self: &GameEntity) : bool {
+    public fun is_finished(self: &GameEntity) : bool {
         self.is_finished
     }
 
-    public(package) fun player1_info(self: &GameEntity) : &PlayerInfo {
+    public fun player1_info(self: &GameEntity) : &PlayerInfo {
         &self.player1
     }
     
-    public(package) fun player2_info(self: &GameEntity) : &PlayerInfo {
+    public fun player2_info(self: &GameEntity) : &PlayerInfo {
         &self.player2
     }
 
@@ -59,7 +58,7 @@ module ttt_game::game_entity {
         &mut self.game_board
     }
 
-    public(package) fun winner(self: &GameEntity) : &Option<PlayerInfo> {
+    public fun winner(self: &GameEntity) : &Option<PlayerInfo> {
         &self.winner
     }
 
@@ -92,9 +91,9 @@ module ttt_game::game_entity {
      }
 
     entry fun delete_game(_: &GameManagerCap, history: &mut History, game: GameEntity, ctx: &mut TxContext) {
-        let game_record = game_record::new_game_record(*game.player1_info(), *game.player2_info(), *game.winner.borrow(), ctx);
-        table::add(history.games(), object::id(&game_record), game_record);
-        game.destroy();
+        assert!(game.is_finished, EGameIsNotFinished);
+        history.add_game(*game.player1_info(), *game.player2_info(), *game.winner().borrow(), ctx);
+        destroy(game);
      }
 
     public fun destroy(self: GameEntity) {
@@ -109,9 +108,6 @@ module ttt_game::game_entity {
 
         // Only current registered player can make a turn
         assert!(game.current_player.addr() == sender , EInvalidCurrentPlayer);
-        if (row > 2 && col > 2) { 
-            abort EInvalidTurnLocation
-        };
 
         // Check index is not out of bounds and empty mark space
         turn_validation(game.game_board(), row, col);
