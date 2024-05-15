@@ -102,3 +102,4 @@ sui client call --function delete_game --package $PACKAGE_ID --module game_entit
 
 Add checking for draw.
 Add rewards for winner.
+Player posibility to choose mark type.
