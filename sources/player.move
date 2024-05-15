@@ -1,11 +1,13 @@
 module ttt_game::player {
     use std::string::String;
 
+    /// Represents a player object.
     public struct Player has key {
             id: UID,
             info: PlayerInfo
     }
 
+    /// Player object projection with all required information to store.
     public struct PlayerInfo has store, copy, drop {
         addr: address,
         nickname: String,
@@ -15,6 +17,8 @@ module ttt_game::player {
     public fun nickname(self: &PlayerInfo) : &String {
         &self.nickname
     }
+
+    /// Registers a new immutable `Player` object associated with the `sender`.
     entry fun create_player(nickname: String, ctx: &mut TxContext) {
         let player = Player {
             id: object::new(ctx),
@@ -26,6 +30,7 @@ module ttt_game::player {
         transfer::freeze_object(player);
     }
 
+    /// Desctructor of player object.
     public fun destroy(self: Player) {
         let Player { id, info: _ } = self;
         object::delete(id);
@@ -40,6 +45,7 @@ module ttt_game::player {
     }
 
     #[test_only]
+    /// A constructor used for testing.
     public fun new(nickname: String, addr: address, ctx: &mut TxContext): Player {
         let id = object::new(ctx);
 

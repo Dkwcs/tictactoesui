@@ -2,7 +2,7 @@ module ttt_game::game_record {
     use std::string::String;
     use ttt_game::player::{PlayerInfo};
 
-
+    /// Represents a projection of a game entity after finishing.
     public struct GameRecord has key, store {
         id: UID,
         player1_nickname: String,
@@ -10,7 +10,7 @@ module ttt_game::game_record {
         winner: PlayerInfo,
 
     }
- 
+    
     public(package) fun new_game_record(player1_info: PlayerInfo, player2_info: PlayerInfo, winner: PlayerInfo, ctx: &mut TxContext): GameRecord {
         GameRecord {
             id: object::new(ctx),

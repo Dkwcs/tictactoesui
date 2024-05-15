@@ -49,9 +49,10 @@ module ttt_game::ttt_game_tests {
 
         let mut ttt_game = new_game_entity(*player1.info(), *player2.info(), scenario.ctx());
 
-        //Act & Assert
+        //Act
         play_simple_game(&mut ttt_game, player1_addr, player2_addr, &mut scenario);
 
+        // Assert
         assert!(ttt_game.is_finished(), 0);
 
         delete_game(&game_manager_cap, &mut history, ttt_game, scenario.ctx());
